@@ -12,10 +12,14 @@ def view_index():
     return render_template("index.html")
 
 
-@app.route("/usage", methods=["POST"])
+@app.route("/api/usage", methods=["POST"])
 def view_usage():
     """
     Widok strony obliczającej i wyświetlającej zużycie w postaci raportu.
+    Zwraca wyniki w postaci obiektu JSON.
+
+    Podana strona spodziewa się otrzymać fomularz z
+
     """
 
     # Moc podana w kilowatach
@@ -44,19 +48,14 @@ def view_usage():
 
     assert real_usage.shape == sim_usage.shape, (real_usage.size, sim_usage.size)
 
-    context_data = {
+    return jsonify({
         "sim_usage": sim_usage.tolist(),
         "real_usage": real_usage.tolist(),
         "months": months,
         "days": [day.strftime("%Y-%m-%d") for day in days],
         "night_durations": night_durations.tolist(),
-    }
-
-    if request.args.get("format", None) == "json":
-        return jsonify(context_data)
-
-    return render_template("usage.html", **context_data)
+    })
 
 
 if __name__ == "__main__":
-    app.run(port=80)
+    app.run()
