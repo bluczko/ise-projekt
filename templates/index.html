@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ISE</title>
+{#        <link rel="stylesheet" href="{{ url_for("static", filename="styles.css") }}" />#}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        {#
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        #}
+    </head>
+    <body>
+        {# <div id="map"></div> #}
+
+        <form id="energy-usage" action="/usage" method="POST">
+            <table>
+                <tr>
+                    <td><label for="latitude">Położenie geo.:</label></td>
+                    <td>
+                        Dł. <input name="latitude" type="number" min="-90" max="90" value="51.11163" step="0.00001" />
+                        Szer. <input name="longitude" type="number" min="-180" max="180" value="17.05367" step="0.00001" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Data od:</td>
+                    <td>
+                        <input name="year_start" type="number" min="1970" value="2020" />
+                        <input name="month_start" type="number" min="1" max="12" value="1" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Data do:</td>
+                    <td>
+                        <input name="year_end" type="number" min="1970" value="2021" />
+                        <input name="month_end" type="number" min="1" max="12" value="1" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label for="set_energy">Moc instalacji:</label></td>
+                    <td><input name="set_energy" type="number" min="1" value="50" step="0.1" /> [kW]</td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">
+                        <p>Zużycie energii:</p>
+                        <table id="usage-rows">
+
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><input type="submit" value="Oblicz"/ ></td>
+                </tr>
+            </table>
+        </form>
+
+        <script src="{{ url_for("static", filename="index.js") }}"></script>
+    </body>
+</html>
