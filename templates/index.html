@@ -3,59 +3,73 @@
     <head>
         <meta charset="UTF-8">
         <title>ISE</title>
-{#        <link rel="stylesheet" href="{{ url_for("static", filename="styles.css") }}" />#}
+        {#<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />#}
+        {#<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>#}
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        {#
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-        #}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
     </head>
     <body>
-        <form id="energy-usage" action="/api/usage" method="POST">
-            <table>
-                <tr>
-                    <td><label for="latitude">Położenie geo.:</label></td>
-                    <td>
-                        Dł. <input name="latitude" type="number" min="-90" max="90" value="51.11163" step="0.00001" />
-                        Szer. <input name="longitude" type="number" min="-180" max="180" value="17.05367" step="0.00001" />
-                    </td>
-                </tr>
+        <h1>Projekt ISE</h1>
 
-                <tr>
-                    <td>Data od:</td>
-                    <td>
-                        <input name="year_start" type="number" min="1970" value="2020" />
-                        <input name="month_start" type="number" min="1" max="12" value="1" />
-                    </td>
-                </tr>
+        <div id="usage-form">
+            <h2>Wypełnianie danych</h2>
+            <form id="energy-usage">
+                <table>
+                    <tr>
+                        <td><label for="latitude">Długość geo.:</label></td>
+                        <td>
+                            <input name="latitude" type="number" min="-90" max="90" value="51.11163" step="0.00001" />
+                        </td>
+                    </tr>
 
-                <tr>
-                    <td>Data do:</td>
-                    <td>
-                        <input name="year_end" type="number" min="1970" value="2021" />
-                        <input name="month_end" type="number" min="1" max="12" value="1" />
-                    </td>
-                </tr>
+                    <tr>
+                        <td><label for="latitude">Szerokość geo.:</label></td>
+                        <td><input name="longitude" type="number" min="-180" max="180" value="17.05367" step="0.00001"/></td>
+                    </tr>
 
-                <tr>
-                    <td><label for="set_energy">Moc instalacji:</label></td>
-                    <td><input name="set_energy" type="number" min="1" value="50" step="0.1" /> [kW]</td>
-                </tr>
+                    <tr>
+                        <td>Data od (rok, miesiąc):</td>
+                        <td>
+                            <input name="year_start" type="number" min="1970" maxlength="4" value="2020" />
+                            <input name="month_start" type="number" min="1" max="12" value="1" />
+                        </td>
+                    </tr>
 
-                <tr>
-                    <td colspan="2">
-                        <p>Zużycie energii:</p>
-                        <table id="usage-rows">
+                    <tr>
+                        <td>Data do (rok, miesiąc):</td>
+                        <td>
+                            <input name="year_end" type="number" min="1970" maxlength="4" value="2021" />
+                            <input name="month_end" type="number" min="1" max="12" value="1" />
+                        </td>
+                    </tr>
 
-                        </table>
-                    </td>
-                </tr>
+                    <tr>
+                        <td><label for="set_energy">Moc instalacji:</label></td>
+                        <td><input name="set_energy" type="number" min="1" value="50" step="0.1" /> [kW]</td>
+                    </tr>
 
-                <tr>
-                    <td><input type="submit" value="Oblicz"/ ></td>
-                </tr>
-            </table>
-        </form>
+                    <tr>
+                        <td colspan="2">
+                            <p>Zużycie energii:</p>
+                            <table id="usage-rows">
+                                <!-- Wypełniane przez onDateChange() z index.js -->
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="submit" value="Oblicz" /></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+        <div id="usage-results" style="display: none;">
+            <h2>Wyniki</h2>
+            <canvas id="usage-chart">
+                <!-- Wypełniane przez repaintCharts() z index.js -->
+            </canvas>
+        </div>
 
         <script src="{{ url_for("static", filename="index.js") }}"></script>
     </body>

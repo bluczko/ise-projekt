@@ -18,8 +18,15 @@ def view_usage():
     Widok strony obliczającej i wyświetlającej zużycie w postaci raportu.
     Zwraca wyniki w postaci obiektu JSON.
 
-    Podana strona spodziewa się otrzymać fomularz z
-
+    Podana strona spodziewa się otrzymać fomularz z kluczami:
+      - set_energy
+      - latitude
+      - longitude
+      - year_start
+      - month_start
+      - year_end
+      - month_end
+      - usage (wielokrotnie)
     """
 
     # Moc podana w kilowatach
@@ -33,8 +40,18 @@ def view_usage():
     assert -180 < longitude < 180
 
     # Zakresy czasowe
-    dt_start = datetime(year=int(request.form["year_start"]), month=int(request.form["month_start"]), day=1)
-    dt_end = datetime(year=int(request.form["year_end"]), month=int(request.form["month_end"]), day=1)
+    dt_start = datetime(
+        year=int(request.form["year_start"]),
+        month=int(request.form["month_start"]),
+        day=1
+    )
+
+    dt_end = datetime(
+        year=int(request.form["year_end"]),
+        month=int(request.form["month_end"]),
+        day=1
+    )
+
     assert dt_start < dt_end
 
     # Długość trwania nocy
@@ -43,17 +60,17 @@ def view_usage():
     # Symulowane (idealne) zużycie energii
     months, sim_usage = group_monthly(days, night_durations * set_energy)
 
-    # Rzeczywiste (empiryczne) zużycie
+    # Rzeczywiste (empiryczne) zużycie wprowadzone prze użytkownika
     real_usage = np.array([float(u) for u in request.form.getlist("usage[]")])
 
     assert real_usage.shape == sim_usage.shape, (real_usage.size, sim_usage.size)
 
     return jsonify({
-        "sim_usage": sim_usage.tolist(),
-        "real_usage": real_usage.tolist(),
+        "simUsage": sim_usage.tolist(),
+        "realUsage": real_usage.tolist(),
         "months": months,
         "days": [day.strftime("%Y-%m-%d") for day in days],
-        "night_durations": night_durations.tolist(),
+        "nightDurations": night_durations.tolist(),
     })
 
 
