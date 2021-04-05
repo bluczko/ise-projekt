@@ -79,7 +79,7 @@ def calc_nights(latitude: float, longitude: float, dt_start: datetime, dt_end: d
         sunrise = sun.get_sunrise_time(dt)
         sunset = sun.get_sunset_time(dt)
 
-        # Dopisz do listy
+        # Dopisz do list
         days.append(dt)
         sunrises.append(dt2td(sunrise).seconds / 3600)
         sunsets.append(dt2td(sunset).seconds / 3600)
