@@ -5,11 +5,11 @@
         "wrzesień", "październik", "listopad", "grudzień"
     ] %}
     <select name="{{ field_name }}" class="form-select">
-    {% for name in names %}
-        <option value="{{ loop.index }}" {% if loop.index == default %}selected{% endif %}>
-            {{ name }}
-        </option>
-    {% endfor %}
+        {% for name in names %}
+            <option value="{{ loop.index }}" {% if loop.index == default %}selected{% endif %}>
+                {{ name }}
+            </option>
+        {% endfor %}
     </select>
 {% endmacro %}
 
@@ -19,12 +19,14 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>ISE</title>
-{#    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />#}
-{#    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>#}
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
-{#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>#}
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -36,6 +38,10 @@
             <form id="energy-usage">
                 <div class="mb-3">
                     <label for="latitude" class="form-label">Położenie geograficzne</label>
+
+                    <button type="button" class="btn btn-sm btn-outline-secondary float-end" id="open-map">
+                        Wybierz z mapy
+                    </button>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">dł.</span>
@@ -79,10 +85,10 @@
                 </div>
 
                 <div class="mb-3">
-                        <label>Zużycie energii</label>
-                        <table id="usage-rows">
-                            <!-- Wypełniane przez onDateChange() z index.js -->
-                        </table>
+                    <label>Zużycie energii</label>
+                    <div id="usage-rows">
+                        <!-- Wypełniane przez onDateChange() z index.js -->
+                    </div>
                 </div>
 
                 <input type="submit" value="Oblicz"/>
@@ -99,6 +105,21 @@
             </canvas>
         </div>
 
+    </div>
+</div>
+
+<div class="modal fade" id="map-modal" tabindex="-1" role="dialog" aria-labelledby="map-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="map-modal-title">Wybierz nową pozycję</h5>
+            </div>
+            <div class="modal-body" id="map-modal-body" style="height: 100%; min-height: 50em;"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="map-modal-cancel">Anuluj</button>
+                <button type="button" class="btn btn-outline-primary" id="map-modal-select">Wybierz</button>
+            </div>
+        </div>
     </div>
 </div>
 <script src="{{ url_for("static", filename="index.js") }}"></script>

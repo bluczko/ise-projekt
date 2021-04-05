@@ -1,5 +1,7 @@
 $(document).ready(function () {
     const $energyUsageForm = $("form#energy-usage");
+    const $latitude = $("form#energy-usage input[name='latitude']");
+    const $longitude = $("form#energy-usage input[name='longitude']");
     const $yearStart = $("form#energy-usage input[name='year_start']");
     const $monthStart = $("form#energy-usage select[name='month_start']");
     const $yearEnd = $("form#energy-usage input[name='year_end']");
@@ -39,7 +41,7 @@ $(document).ready(function () {
             let value = rowValues.hasOwnProperty(dateCode) ? rowValues[dateCode] : 0;
 
             if (mockData) {
-                value = 2000 + 1000 * Math.random() + 1000 * Math.cos(24 * year + month);
+                value = 12000 + 2000 * Math.random() + 10000 * Math.pow(Math.cos(((12 * year + month) * Math.PI) / 12), 2);
                 value = Math.round((value + Number.EPSILON) * 100) / 100;
             }
 
@@ -91,7 +93,7 @@ $(document).ready(function () {
             usageChart = null;
         }
 
-        usageChart = new Chart($("canvas#usage-chart").get(0).getContext("2d"),{
+        usageChart = new Chart($("canvas#usage-chart").get(0).getContext("2d"), {
             type: "bar",
             responsive: true,
             options: {
@@ -148,4 +150,51 @@ $(document).ready(function () {
     onDateChange();
 
     $energyUsageForm.submit(onSubmit);
+
+    const $mapModal = $("#map-modal");
+    let map = null;
+    let mapMarker = null;
+
+    $("#open-map").click(function () {
+        $mapModal.modal("show");
+
+        let latitude = Number($latitude.val());
+        let longitude = Number($longitude.val());
+
+        if (map === null) {
+            map = L.map("map-modal-body");
+
+            L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            mapMarker = L.marker([latitude, longitude]).addTo(map);
+
+            map.on("click", function (event) {
+                let pos = map.mouseEventToLatLng(event.originalEvent);
+                mapMarker.setLatLng([
+                    Math.round(pos.lat * 100000) / 100000,
+                    Math.round(pos.lng * 100000) / 100000
+                ]);
+            });
+        }
+
+        map.setView([latitude, longitude], 13);
+    });
+
+    $("#map-modal-cancel").click(() => {
+        let latitude = Number($latitude.val());
+        let longitude = Number($longitude.val());
+
+        mapMarker.setLatLng([latitude, longitude]);
+
+        $mapModal.modal("hide");
+    });
+
+    $("#map-modal-select").click(() => {
+        let pos = mapMarker.getLatLng();
+        $latitude.val(pos.lat);
+        $longitude.val(pos.lng);
+        $mapModal.modal("hide");
+    });
 });
