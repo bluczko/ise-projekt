@@ -6,13 +6,13 @@ $(document).ready(function () {
     const $monthEnd = $("form#energy-usage select[name='month_end']");
     const $submitButton = $("form#energy-usage input[type='submit']");
 
-    const $usageResults = $("#usage-results");
     let usageChart = null;
+    let diffChart = null;
 
     const onDateChange = function () {
         const rowProto = `<div class="input-group">
         <span class="input-group-text">%label%</span class="input-group-text">
-        <input name="usage" data-date-code="%label%" type="number" min="0" step="0.1" value="%value%">
+        <input class="form-control" name="usage" data-date-code="%label%" type="number" min="0" step="0.01" value="%value%">
         <span class="input-group-text">kW</span>
         </div>`;
 
@@ -32,9 +32,16 @@ $(document).ready(function () {
 
         $usageRows.children().remove();
 
+        const mockData = new URLSearchParams(new URL(document.location.href).search).has("mock");
+
         for (let year = yearStart, month = monthStart; 12 * year + month <= 12 * yearEnd + monthEnd;) {
             let dateCode = `${year}-${month.toString().padStart(2, "0")}`;
             let value = rowValues.hasOwnProperty(dateCode) ? rowValues[dateCode] : 0;
+
+            if (mockData) {
+                value = 2000 + 1000 * Math.random() + 1000 * Math.cos(24 * year + month);
+                value = Math.round((value + Number.EPSILON) * 100) / 100;
+            }
 
             let row = String(rowProto)
                 .replaceAll("%label%", dateCode)
@@ -79,8 +86,6 @@ $(document).ready(function () {
     };
 
     const repaintCharts = function (data) {
-        $usageResults.hide();
-
         if (usageChart !== null) {
             usageChart.destroy();
             usageChart = null;
@@ -93,33 +98,47 @@ $(document).ready(function () {
                 plugins: {
                     title: {
                         display: true,
-                        text: "Wykres zużycia energii [kWh]"
+                        text: "Zużycie energii [kWh]"
                     }
-                },
-                scales: {
-                    x: {beginAtZero: true},
-                    y: {beginAtZero: true}
                 }
             },
             data: {
                 labels: data.months,
                 datasets: [
                     {
-                        label: "Zużycie symulowane (idealne)",
+                        label: "Symulowane",
                         data: data.simUsage,
-                        backgroundColor: "rgb(192, 0, 0)",
-                        borderColor: "rgb(255, 0, 0)"
+                        backgroundColor: "rgb(64, 64, 192)"
                     },
                     {
-                        label: "Zużycie rzeczywiste",
+                        label: "Rzeczywiste",
                         data: data.realUsage,
-                        backgroundColor: "rgb(0, 255, 0)"
+                        backgroundColor: "rgb(64, 192, 64)"
                     }
                 ]
             }
         });
 
-        $usageResults.show();
+        if (diffChart !== null) {
+            diffChart.destroy();
+            diffChart = null;
+        }
+
+        let diffData = data.simUsage.map((simValue, i) => simValue - data.realUsage[i]);
+
+        diffChart = new Chart($("canvas#diff-chart").get(0), {
+            type: "bar",
+            responsive: true,
+            maintainAspectRatio: true,
+            data: {
+                labels: data.months,
+                datasets: [{
+                    label: "Różnica",
+                    data: diffData,
+                    backgroundColor: diffData.map(v => v > 0 ? "rgb(64, 192, 64)" : "rgb(192, 64, 64)")
+                }]
+            }
+        });
     };
 
     $yearStart.change(onDateChange);

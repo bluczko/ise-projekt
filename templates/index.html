@@ -51,18 +51,20 @@
                 </div>
 
                 <div class="mb-3">
-                    <label>Zakres odczytów</label>
+                    <label>Zakres czasowy</label>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">Od</span>
-                        <input name="year_start" type="number" class="form-control" min="1970" value="2020"/>
                         {{ months("month_start") }}
+                        <input name="year_start" type="number" class="form-control"
+                               maxlength="4" value="2020"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">Do</span>
-                        <input name="year_end" type="number" class="form-control" min="1970" value="2020"/>
                         {{ months("month_end", 12) }}
+                        <input name="year_end" type="number" class="form-control"
+                               maxlength="4" value="2020"/>
                     </div>
                 </div>
 
@@ -89,6 +91,10 @@
 
         <div id="usage-results" class="col-sm-12 col-lg-8">
             <canvas id="usage-chart">
+                <!-- Wypełniane przez repaintCharts() z index.js -->
+            </canvas>
+
+            <canvas id="diff-chart">
                 <!-- Wypełniane przez repaintCharts() z index.js -->
             </canvas>
         </div>

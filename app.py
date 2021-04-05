@@ -27,6 +27,13 @@ def view_usage():
       - year_end
       - month_end
       - usage (wielokrotnie)
+
+    W odpowiedzi klient dostaje obiekt JSON:
+    {
+        months: float[],
+        simUsage: float[]
+        realUsage: string[]
+    }
     """
 
     # Moc podana w kilowatach
@@ -60,11 +67,9 @@ def view_usage():
     assert real_usage.shape == sim_usage.shape, (real_usage.size, sim_usage.size)
 
     return jsonify({
+        "months": months,
         "simUsage": sim_usage.tolist(),
         "realUsage": real_usage.tolist(),
-        "months": months,
-        "days": [day.strftime("%Y-%m-%d") for day in days],
-        "nightDurations": night_durations.tolist(),
     })
 
 
