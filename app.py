@@ -40,17 +40,11 @@ def view_usage():
     assert -180 < longitude < 180
 
     # Zakresy czasowe
-    dt_start = datetime(
-        year=int(request.form["year_start"]),
-        month=int(request.form["month_start"]),
-        day=1
-    )
-
+    dt_start = datetime(year=int(request.form["year_start"]), month=int(request.form["month_start"]), day=1)
     dt_end = datetime(
         year=int(request.form["year_end"]),
         month=int(request.form["month_end"]),
-        day=1
-    )
+        day=last_day_of_month(int(request.form["year_end"]), int(request.form["month_end"])))
 
     assert dt_start < dt_end
 

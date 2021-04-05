@@ -1,22 +1,25 @@
 $(document).ready(function () {
     const $energyUsageForm = $("form#energy-usage");
     const $yearStart = $("form#energy-usage input[name='year_start']");
-    const $monthStart = $("form#energy-usage input[name='month_start']");
+    const $monthStart = $("form#energy-usage select[name='month_start']");
     const $yearEnd = $("form#energy-usage input[name='year_end']");
-    const $monthEnd = $("form#energy-usage input[name='month_end']");
+    const $monthEnd = $("form#energy-usage select[name='month_end']");
     const $submitButton = $("form#energy-usage input[type='submit']");
 
     const $usageResults = $("#usage-results");
     let usageChart = null;
 
     const onDateChange = function () {
-        const rowProto = `<tr>
-        <td><label>%label%</label></td>
-        <td><input name="usage" data-date-code="%label%" type="number" min="0" step="0.1" value="%value%"> [kW]</td>
-        </tr>`;
+        const rowProto = `<div class="input-group">
+        <span class="input-group-text">%label%</span class="input-group-text">
+        <input name="usage" data-date-code="%label%" type="number" min="0" step="0.1" value="%value%">
+        <span class="input-group-text">kW</span>
+        </div>`;
 
-        let yearStart = Number($yearStart.val()), monthStart = Number($monthStart.val()),
-            yearEnd = Number($yearEnd.val()), monthEnd = Number($monthEnd.val());
+        let yearStart = Number($yearStart.val()),
+            monthStart = Number($monthStart.val()),
+            yearEnd = Number($yearEnd.val()),
+            monthEnd = Number($monthEnd.val());
 
         let rowValues = {};
 
@@ -29,7 +32,7 @@ $(document).ready(function () {
 
         $usageRows.children().remove();
 
-        for (let year = yearStart, month = monthStart; 12 * year + month < 12 * yearEnd + monthEnd;) {
+        for (let year = yearStart, month = monthStart; 12 * year + month <= 12 * yearEnd + monthEnd;) {
             let dateCode = `${year}-${month.toString().padStart(2, "0")}`;
             let value = rowValues.hasOwnProperty(dateCode) ? rowValues[dateCode] : 0;
 
@@ -90,12 +93,12 @@ $(document).ready(function () {
                 plugins: {
                     title: {
                         display: true,
-                        text: "Wykres zużycia energii"
+                        text: "Wykres zużycia energii [kWh]"
                     }
                 },
                 scales: {
-                    x: {stacked: true},
-                    y: {stacked: true}
+                    x: {beginAtZero: true},
+                    y: {beginAtZero: true}
                 }
             },
             data: {
@@ -104,7 +107,8 @@ $(document).ready(function () {
                     {
                         label: "Zużycie symulowane (idealne)",
                         data: data.simUsage,
-                        backgroundColor: "rgb(255, 0, 0)"
+                        backgroundColor: "rgb(192, 0, 0)",
+                        borderColor: "rgb(255, 0, 0)"
                     },
                     {
                         label: "Zużycie rzeczywiste",

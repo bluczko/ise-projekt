@@ -1,4 +1,5 @@
 from datetime import timedelta, datetime
+
 import numpy as np
 
 from suntime import Sun
@@ -16,7 +17,7 @@ def days_range(start: datetime, end: datetime):
     dt = start
     yield dt
 
-    while dt < end:
+    while dt <= end:
         yield dt
         dt = dt + timedelta(days=1)
 
@@ -107,3 +108,12 @@ def group_monthly(days: [datetime], values: np.array):
         monthly_usage.append(np.sum(mdays_power_usage))
 
     return months, np.array(monthly_usage)
+
+
+def last_day_of_month(year, month):
+    dt = datetime(year, month, 1) + timedelta(days=31)
+
+    while dt.year != year and dt.month != month:
+        dt -= timedelta(days=1)
+
+    return dt.day
