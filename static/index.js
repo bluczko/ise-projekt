@@ -164,7 +164,7 @@ $(document).ready(function () {
         if (map === null) {
             map = L.map("map-modal-body");
 
-            L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
@@ -196,5 +196,13 @@ $(document).ready(function () {
         $latitude.val(pos.lat);
         $longitude.val(pos.lng);
         $mapModal.modal("hide");
+    });
+
+    $mapModal.on("shown.bs.modal", function () {
+        setTimeout(function () {
+            if (map !== null) {
+                map.invalidateSize();
+            }
+        }, 10);
     });
 });
