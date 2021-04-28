@@ -15,7 +15,7 @@ $(document).ready(function () {
         const rowProto = `<div class="input-group">
         <span class="input-group-text">%label%</span class="input-group-text">
         <input class="form-control" name="usage" data-date-code="%label%" type="number" min="0" step="0.01" value="%value%">
-        <span class="input-group-text">kW</span>
+        <span class="input-group-text">kWh</span>
         </div>`;
 
         let yearStart = Number($yearStart.val()),
